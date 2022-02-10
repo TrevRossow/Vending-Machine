@@ -8,6 +8,8 @@ public class CLI {
     private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
     private static final String[] MAIN_MENU_OPTIONS = {MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE};
 
+    //TODO - Add option for Sales Report
+
     private Menu menu;
 
     VendingMachine test = new VendingMachine();
@@ -22,10 +24,11 @@ public class CLI {
             String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 
             if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-                menu.displayMachineItems();
+                test.displayMachineItems();
             } else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
+                //menu.purchase
+                test.purchase();
 
-                menu.purchase();
             }
         }
     }

@@ -1,33 +1,27 @@
 package com.techelevator;
 
-import com.techelevator.view.Menu;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
-import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class VendingMachine {
 
-    private Transaction transaction = new Transaction();
+    private static Transaction transaction = new Transaction();
+//    private static Map<String, Item> inventoryMap = new HashMap<>();
+    private static Map <String, Item> inventoryMap = new HashMap<>();
+//    private Map<String, Item> duplicateMap = inventoryMap;
 
 
-//    public static void main(String[] args) {
-//
-//        VendingMachine vm = new VendingMachine();
-//        vm.createItems();
-//        System.out.println(duplicateMap.get("A1").getSlot());
-//    }
-
-    public static Map<String, Item> inventoryMap = new HashMap<>();
 
 
-    Scanner scan = new Scanner(System.in);
+    static Scanner scan = new Scanner(System.in);
 
-    public static Map<String, Item> getInventoryMap() {
+//    public static Map<String, Item> getInventoryMap() {
+      public Map<String, Item> getInventoryMap() {
         VendingMachine vm = new VendingMachine();
         vm.createItems();
         return inventoryMap;
@@ -75,7 +69,7 @@ public class VendingMachine {
 
     }
 
-    public void feedMoney() {
+    private void feedMoney() {
 
         System.out.print("Enter money in Whole Dollars >>> ");
         String userInput = scan.nextLine();
@@ -88,14 +82,17 @@ public class VendingMachine {
 
     }
 
-    public void selectProduct() {
-        System.out.print("Enter item code >>>");
+    private void selectProduct() {
+        System.out.print("Enter item code >>> ");
         String userInput = scan.nextLine();
+
 
 
         //Takes one out of inventory
         Item product = inventoryMap.get(userInput);
         product.sellItem();
+
+        //TODO - Print name of product received
         System.out.println("Num Available is " + product.getNumAvailable());
 
         //Subract price from balance
@@ -107,7 +104,8 @@ public class VendingMachine {
         System.out.println(product.getSound());
 
 
-        //TODO - Check there's to buy item
+        //TODO - Check there's money to buy item
+
 
         //TODO - Log transaction
 
@@ -116,7 +114,7 @@ public class VendingMachine {
 
     }
 
-    public void getChange() {
+    private void getChange() {
         BigDecimal changeBalance = transaction.getBalance();
         BigDecimal zero = new BigDecimal("0.00");
         int numOfQuarters = 0;
@@ -127,7 +125,7 @@ public class VendingMachine {
         BigDecimal nickel = new BigDecimal("0.05");
 
         System.out.println("Your change is: $" + changeBalance);
-        while ((changeBalance.compareTo(zero) > -1)) {
+        while ((changeBalance.compareTo(zero) > 0)) {
 
             if (changeBalance.compareTo(quarter) > -1) {
                 numOfQuarters++;
@@ -139,12 +137,56 @@ public class VendingMachine {
                 numOfNickels++;
                 changeBalance = changeBalance.subtract(nickel);
 
-            } else {
-                changeBalance = zero;
-                break;
             }
         }
         System.out.format("You are receiving %d quarters, %d dimes, %d nickels", numOfQuarters, numOfDimes, numOfNickels);
+        System.out.println("");
+
+        //TODO - Log Transaction
+
+    }
+    public void purchase() {
+        try {
+            System.out.println("Current Money Provided: $" + transaction.getBalance());
+            System.out.println("");
+            System.out.println("(1) Feed Money");
+            System.out.println("(2) Select Product");
+            System.out.println("(3) Finish Transaction");
+            System.out.println("");
+
+            System.out.print("Please choose an option >>> ");
+            String userInput = scan.nextLine();
+
+            if (userInput.substring(0, 1).equals("1")) {
+                //vendingMachine.feedMoney();
+                feedMoney();
+            } else if (userInput.substring(0, 1).equals("2")) {
+                //vendingMachine.selectProduct();
+                selectProduct();
+            } else if (userInput.substring(0, 1).equals("3")) {
+                //vendingMachine.getChange();
+                getChange();
+            } else {
+                throw new IllegalArgumentException();
+
+            }
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("Enter a valid choice!");
+
+        }
+    }
+
+    public void displayMachineItems() {
+
+        Set<String> inventoryKeys = inventoryMap.keySet();
+        for (String inventoryKey : inventoryKeys) {
+            String slot = inventoryMap.get(inventoryKey).getSlot();
+            String name = inventoryMap.get(inventoryKey).getName();
+            BigDecimal price = inventoryMap.get(inventoryKey).getPrice();
+            int numAvailable = inventoryMap.get(inventoryKey).getNumAvailable();
+            System.out.println(slot + "|" + name + "|" + price + "| Avail: " + numAvailable);
+        }
 
 
     }

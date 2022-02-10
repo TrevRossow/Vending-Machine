@@ -1,7 +1,7 @@
 package com.techelevator.view;
 
 import com.techelevator.Item;
-import com.techelevator.Transaction;
+//import com.techelevator.Transaction;
 import com.techelevator.VendingMachine;
 
 import java.io.InputStream;
@@ -10,8 +10,8 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.*;
 
+
 public class Menu {
-    private Transaction transaction = new Transaction();
     private VendingMachine vendingMachine = new VendingMachine();
     VendingMachine vm = new VendingMachine();
     public Map<String, Item> duplicateMap = vm.getInventoryMap();
@@ -51,34 +51,34 @@ public class Menu {
         return choice;
     }
 
-    public void purchase() {
-        try {
-            System.out.println("Current Money Provided: $" + transaction.getBalance());
-            System.out.println("");
-            System.out.println("(1) Feed Money");
-            System.out.println("(2) Select Product");
-            System.out.println("(3) Finish Transaction");
-            System.out.println("");
-
-            System.out.println("Please choose and option >>> ");
-            String userInput = in.nextLine();
-
-            if (userInput.substring(0, 1).equals("1")) {
-                vendingMachine.feedMoney();
-            } else if (userInput.substring(0, 1).equals("2")) {
-                vendingMachine.selectProduct();
-            } else if (userInput.substring(0, 1).equals("3")) {
-                vendingMachine.getChange();
-            } else {
-                throw new IllegalArgumentException();
-
-            }
-
-        } catch (IllegalArgumentException e) {
-            System.out.println("Enter a valid choice!");
-
-        }
-    }
+//    public void purchase() {
+//        try {
+//            System.out.println("Current Money Provided: $" + transaction.getBalance());
+//            System.out.println("");
+//            System.out.println("(1) Feed Money");
+//            System.out.println("(2) Select Product");
+//            System.out.println("(3) Finish Transaction");
+//            System.out.println("");
+//
+//            System.out.println("Please choose and option >>> ");
+//            String userInput = in.nextLine();
+//
+//            if (userInput.substring(0, 1).equals("1")) {
+//                vendingMachine.feedMoney();
+//            } else if (userInput.substring(0, 1).equals("2")) {
+//                vendingMachine.selectProduct();
+//            } else if (userInput.substring(0, 1).equals("3")) {
+//                vendingMachine.getChange();
+//            } else {
+//                throw new IllegalArgumentException();
+//
+//            }
+//
+//        } catch (IllegalArgumentException e) {
+//            System.out.println("Enter a valid choice!");
+//
+//        }
+//    }
 
 
     private void displayMenuOptions(Object[] options) {
@@ -91,19 +91,19 @@ public class Menu {
         out.flush();
     }
 
-    public void displayMachineItems() {
-
-        Set<String> inventoryKeys = duplicateMap.keySet();
-        for (String inventoryKey : inventoryKeys) {
-            String slot = duplicateMap.get(inventoryKey).getSlot();
-            String name = duplicateMap.get(inventoryKey).getName();
-            BigDecimal price = duplicateMap.get(inventoryKey).getPrice();
-            int numAvailable = duplicateMap.get(inventoryKey).getNumAvailable();
-            System.out.println(slot + "|" + name + "|" + price + "| Avail: " + numAvailable);
-        }
-
-
-    }
+//    public void displayMachineItems() {
+//
+//        Set<String> inventoryKeys = duplicateMap.keySet();
+//        for (String inventoryKey : inventoryKeys) {
+//            String slot = duplicateMap.get(inventoryKey).getSlot();
+//            String name = duplicateMap.get(inventoryKey).getName();
+//            BigDecimal price = duplicateMap.get(inventoryKey).getPrice();
+//            int numAvailable = duplicateMap.get(inventoryKey).getNumAvailable();
+//            System.out.println(slot + "|" + name + "|" + price + "| Avail: " + numAvailable);
+//        }
+//
+//
+//    }
 
 
 }
