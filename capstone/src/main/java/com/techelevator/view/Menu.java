@@ -1,15 +1,29 @@
 package com.techelevator.view;
 
+import com.techelevator.Item;
+import com.techelevator.VendingMachine;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Scanner;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class Menu {
+
+	public static void main(String[] args) {
+
+		Menu m = new Menu();
+		m.displayMachineItems();
+
+	}
 
 	private PrintWriter out;
 	private Scanner in;
 
+	public Menu() {
+
+	}
 	public Menu(InputStream input, OutputStream output) {
 		this.out = new PrintWriter(output);
 		this.in = new Scanner(input);
@@ -50,4 +64,25 @@ public class Menu {
 		out.print(System.lineSeparator() + "Please choose an option >>> ");
 		out.flush();
 	}
+
+	public void displayMachineItems() {
+
+
+		VendingMachine vm = new VendingMachine();
+		Map<String, Item> inventoryMap = vm.getInventoryMap();
+		Set<String> inventoryKeys = inventoryMap.keySet();
+
+		for (String inventoryKey : inventoryKeys) {
+			String slot = inventoryMap.get(inventoryKey).getSlot();
+			String name = inventoryMap.get(inventoryKey).getName();
+			BigDecimal price = inventoryMap.get(inventoryKey).getPrice();
+			int numAvailable = inventoryMap.get(inventoryKey).getNumAvailable();
+			System.out.println(slot + "|" + name + "|" + price	+ "| Avail: " + numAvailable );
+		}
+
+
+
+
+	}
+
 }

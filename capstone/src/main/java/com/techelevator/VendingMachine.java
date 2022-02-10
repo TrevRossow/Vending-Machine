@@ -10,25 +10,30 @@ import java.util.Scanner;
 public class VendingMachine {
     public static void main(String[] args) {
         VendingMachine vm = new VendingMachine();
-
-        System.out.println(vm.createItems());
+        vm.createItems();
+        System.out.println(inventoryMap.get("A1").getSlot());
     }
-static
-    Map<String, Item> inventoryMap = new HashMap<>();
+    public static Map<String, Item> inventoryMap = new HashMap<>();
     Scanner scan = new Scanner(System.in);
 
-    public String createItems() {
+    public Map<String, Item> getInventoryMap() {
+        VendingMachine vm = new VendingMachine();
+        vm.createItems();
+        return inventoryMap;
+    }
+
+
+    public void createItems() {
 
         try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
-            
+
             while (inputFile.hasNextLine()) {
                 String line = inputFile.nextLine();
-                String[] characteristics = line.split("|");
+                String[] characteristics = line.split("\\|");
                 String slot = characteristics[0];
                 String name = characteristics[1];
                 BigDecimal price = new BigDecimal(characteristics[2]);
                 String item = characteristics[3];
-
 
 
                 if (item.equals("Chip")) {
@@ -56,7 +61,9 @@ static
             System.out.println("File Not Found");
         }
 
+
     }
+
 }
 
 
