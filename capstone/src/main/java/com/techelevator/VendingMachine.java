@@ -106,17 +106,51 @@ public class VendingMachine {
         product.getSound();
         System.out.println(product.getSound());
 
+
         //TODO - Check there's to buy item
 
         //TODO - Log transaction
-
 
 
         //TODO - Add to Sales Report
 
     }
 
+    public void getChange() {
+        BigDecimal changeBalance = transaction.getBalance();
+        BigDecimal zero = new BigDecimal("0.00");
+        int numOfQuarters = 0;
+        int numOfDimes = 0;
+        int numOfNickels = 0;
+        BigDecimal quarter = new BigDecimal("0.25");
+        BigDecimal dime = new BigDecimal("0.10");
+        BigDecimal nickel = new BigDecimal("0.05");
 
+        System.out.println("Your change is: $" + changeBalance);
+        while ((changeBalance.compareTo(zero) > -1)) {
+
+            if (changeBalance.compareTo(quarter) > -1) {
+                numOfQuarters++;
+                changeBalance = changeBalance.subtract(quarter);
+            } else if (changeBalance.compareTo(dime) > -1) {
+                numOfDimes++;
+                changeBalance = changeBalance.subtract(dime);
+            } else if (changeBalance.compareTo(nickel) > -1) {
+                numOfNickels++;
+                changeBalance = changeBalance.subtract(nickel);
+
+            } else {
+                changeBalance = zero;
+                break;
+            }
+        }
+        System.out.format("You are receiving %d quarters, %d dimes, %d nickels", numOfQuarters, numOfDimes, numOfNickels);
+
+
+    }
 }
+
+
+
 
 

@@ -68,6 +68,7 @@ public class Menu {
             } else if (userInput.substring(0, 1).equals("2")) {
                 vendingMachine.selectProduct();
             } else if (userInput.substring(0, 1).equals("3")) {
+                vendingMachine.getChange();
             } else {
                 throw new IllegalArgumentException();
 
@@ -78,7 +79,6 @@ public class Menu {
 
         }
     }
-
 
 
     private void displayMenuOptions(Object[] options) {
@@ -104,11 +104,6 @@ public class Menu {
 
 
     }
-
-
-
-
-
 
 
 }
