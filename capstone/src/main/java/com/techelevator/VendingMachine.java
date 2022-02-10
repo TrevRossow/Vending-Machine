@@ -3,16 +3,22 @@ package com.techelevator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class VendingMachine {
+
+    private Transaction transaction = new Transaction();
+
     public static void main(String[] args) {
+
         VendingMachine vm = new VendingMachine();
         vm.createItems();
         System.out.println(inventoryMap.get("A1").getSlot());
     }
+
     public static Map<String, Item> inventoryMap = new HashMap<>();
     Scanner scan = new Scanner(System.in);
 
@@ -63,6 +69,7 @@ public class VendingMachine {
 
 
     }
+
 
 }
 
