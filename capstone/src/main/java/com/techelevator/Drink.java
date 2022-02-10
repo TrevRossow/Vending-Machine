@@ -9,4 +9,9 @@ public class Drink extends Item {
         super(name, price, slot);
         beverageCounter++;
     }
+
+    @Override
+    public String getSound() {
+        return "Glug Glug, Yum!";
+    }
 }

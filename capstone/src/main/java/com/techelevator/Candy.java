@@ -9,4 +9,9 @@ public class Candy extends Item {
         super(name, price, slot);
         candyCounter++;
     }
+
+    @Override
+    public String getSound() {
+        return "Munch Munch, Yum!";
+    }
 }

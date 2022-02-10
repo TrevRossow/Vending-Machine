@@ -10,4 +10,9 @@ public class Gum extends Item {
         super(name, price, slot);
         gumCounter++;
     }
+
+    @Override
+    public String getSound() {
+        return "Chew Chew, Yum!";
+    }
 }

@@ -10,4 +10,9 @@ public class Chip extends Item {
         super(name, price, slot);
         chipsCounter++;
     }
+
+    @Override
+    public String getSound() {
+        return "Crunch Crunch, Yum!";
+    }
 }

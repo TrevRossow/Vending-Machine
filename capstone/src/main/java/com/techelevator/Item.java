@@ -7,7 +7,7 @@ public class Item {
     private String name;
     private BigDecimal price;
     private String slot;
-    private int numAvailable;
+    private int numAvailable = 5;
 
     //contructors
     public Item() {
@@ -19,7 +19,6 @@ public class Item {
         this.name=name;
         this.price=price;
         this.slot=slot;
-        this.numAvailable=5;
 
     }
     //methods
@@ -40,5 +39,13 @@ public class Item {
 
     public int getNumAvailable() {
         return numAvailable;
+    }
+
+    public void sellItem() {
+        this.numAvailable = numAvailable - 1;
+    }
+
+    public String getSound() {
+        return "";
     }
 }

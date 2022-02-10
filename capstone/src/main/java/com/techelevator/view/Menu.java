@@ -12,14 +12,13 @@ import java.util.*;
 
 public class Menu {
     private Transaction transaction = new Transaction();
-  
+    private VendingMachine vendingMachine = new VendingMachine();
+    VendingMachine vm = new VendingMachine();
+    public Map<String, Item> duplicateMap = vm.getInventoryMap();
 
     private PrintWriter out;
     private Scanner in;
 
-    public Menu() {
-
-    }
 
     public Menu(InputStream input, OutputStream output) {
         this.out = new PrintWriter(output);
@@ -65,10 +64,9 @@ public class Menu {
             String userInput = in.nextLine();
 
             if (userInput.substring(0, 1).equals("1")) {
-                                  menu.feedMoney();
-
-
+                vendingMachine.feedMoney();
             } else if (userInput.substring(0, 1).equals("2")) {
+                vendingMachine.selectProduct();
             } else if (userInput.substring(0, 1).equals("3")) {
             } else {
                 throw new IllegalArgumentException();
@@ -81,16 +79,7 @@ public class Menu {
         }
     }
 
-    public void feedMoney() {
-        System.out.print("Enter money in Whole Dollars >>>");
-        String userInput = in.nextLine();
-        String userInputMoney = userInput + ".00";
-        BigDecimal amountDeposited = new BigDecimal(userInputMoney);
-        transaction.deposit(amountDeposited);
-        System.out.println("Current balance is: $" + transaction.getBalance());
 
-
-    }
 
     private void displayMenuOptions(Object[] options) {
         out.println();
@@ -104,20 +93,22 @@ public class Menu {
 
     public void displayMachineItems() {
 
-
-        VendingMachine vm = new VendingMachine();
-        Map<String, Item> inventoryMap = vm.getInventoryMap();
-        Set<String> inventoryKeys = inventoryMap.keySet();
-
+        Set<String> inventoryKeys = duplicateMap.keySet();
         for (String inventoryKey : inventoryKeys) {
-            String slot = inventoryMap.get(inventoryKey).getSlot();
-            String name = inventoryMap.get(inventoryKey).getName();
-            BigDecimal price = inventoryMap.get(inventoryKey).getPrice();
-            int numAvailable = inventoryMap.get(inventoryKey).getNumAvailable();
+            String slot = duplicateMap.get(inventoryKey).getSlot();
+            String name = duplicateMap.get(inventoryKey).getName();
+            BigDecimal price = duplicateMap.get(inventoryKey).getPrice();
+            int numAvailable = duplicateMap.get(inventoryKey).getNumAvailable();
             System.out.println(slot + "|" + name + "|" + price + "| Avail: " + numAvailable);
         }
 
 
     }
+
+
+
+
+
+
 
 }
