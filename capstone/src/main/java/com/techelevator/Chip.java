@@ -12,6 +12,11 @@ public class Chip extends Item {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
     public String getSound() {
         return "Crunch Crunch, Yum!";
     }

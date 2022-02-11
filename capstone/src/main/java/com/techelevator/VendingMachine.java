@@ -1,5 +1,6 @@
 package com.techelevator;
 
+import javax.swing.border.BevelBorder;
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,23 +13,24 @@ import java.util.Set;
 public class VendingMachine {
 
     private static Transaction transaction = new Transaction();
-    //    private static Map<String, Item> inventoryMap = new HashMap<>();
     private static Map<String, Item> inventoryMap = new HashMap<>();
-//    private Map<String, Item> duplicateMap = inventoryMap;
+
 
 
     static Scanner scan = new Scanner(System.in);
 
-    //    public static Map<String, Item> getInventoryMap() {
-    public Map<String, Item> getInventoryMap() {
+
+    public static Map<String, Item> getInventoryMap() {
         VendingMachine vm = new VendingMachine();
-        vm.createItems();
+        vm.createChips();
+        vm.createCandy();
+        vm.createDrinks();
+        vm.createGum();
         return inventoryMap;
     }
+    
 
-
-    private void createItems() {
-
+    public void createChips() {
         try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
 
             while (inputFile.hasNextLine()) {
@@ -39,34 +41,90 @@ public class VendingMachine {
                 BigDecimal price = new BigDecimal(characteristics[2]);
                 String item = characteristics[3];
 
-
                 if (item.equals("Chip")) {
                     Chip chip = new Chip(name, price, slot);
                     inventoryMap.put(slot, chip);
 
-                } else if
-                (item.equals("Drink")) {
-                    Drink drink = new Drink(name, price, slot);
-                    inventoryMap.put(slot, drink);
-
-                } else if
-                (item.equals("Candy")) {
-                    Candy candy = new Candy(name, price, slot);
-                    inventoryMap.put(slot, candy);
-
-                } else if (item.equals("Gum")) {
-                    Gum gum = new Gum(name, price, slot);
-                    inventoryMap.put(slot, gum);
                 }
+
             }
-
-
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found");
         }
-
-
     }
+
+    public void createDrinks() {
+        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
+
+            while (inputFile.hasNextLine()) {
+                String line = inputFile.nextLine();
+                String[] characteristics = line.split("\\|");
+                String slot = characteristics[0];
+                String name = characteristics[1];
+                BigDecimal price = new BigDecimal(characteristics[2]);
+                String item = characteristics[3];
+
+                if (item.equals("Drink")) {
+                    Drink drink = new Drink(name, price, slot);
+                    inventoryMap.put(slot, drink);
+
+                }
+
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        }
+    }
+
+    public void createCandy() {
+        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
+
+            while (inputFile.hasNextLine()) {
+                String line = inputFile.nextLine();
+                String[] characteristics = line.split("\\|");
+                String slot = characteristics[0];
+                String name = characteristics[1];
+                BigDecimal price = new BigDecimal(characteristics[2]);
+                String item = characteristics[3];
+
+                if (item.equals("Candy")) {
+                    Candy candy = new Candy(name, price, slot);
+                    inventoryMap.put(slot, candy);
+
+                }
+
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        }
+    }
+
+    public void createGum() {
+        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
+
+            while (inputFile.hasNextLine()) {
+                String line = inputFile.nextLine();
+                String[] characteristics = line.split("\\|");
+                String slot = characteristics[0];
+                String name = characteristics[1];
+                BigDecimal price = new BigDecimal(characteristics[2]);
+                String item = characteristics[3];
+
+                if (item.equals("Gum")) {
+                    Gum gum = new Gum(name, price, slot);
+                    inventoryMap.put(slot, gum);
+
+                }
+
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+        }
+    }
+
+
+
+
 
     private String receiveUserMoney() {
 
@@ -84,13 +142,19 @@ public class VendingMachine {
         transaction.deposit(amountDeposited);
         System.out.println("Current balance is: $" + transaction.getBalance());
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
-        String formattedDate = dateFormatter.format(LocalDateTime.now());
-        System.out.println(formattedDate + " FEED MONEY: $" + startingBalance + " $" + transaction.getBalance());
-
+        try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+            String formattedDate = dateFormatter.format(LocalDateTime.now());
+            logFile.println(formattedDate + " FEED MONEY: $" + startingBalance + " $" + transaction.getBalance());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private String receiveProductCode() {
+        System.out.println("");
+        displayMachineItems();
+        System.out.println("");
         System.out.print("Enter item code >>> ");
         String userInput = scan.nextLine();
 
@@ -107,8 +171,11 @@ public class VendingMachine {
             throw new IllegalArgumentException("Insufficient Funds");
 
         }
-
-        product.sellItem();
+        if (product.getNumAvailable() > 0) {
+            product.sellItem();
+        } else {
+            throw new IllegalStateException();
+        }
 
         System.out.println(" ");
         System.out.println("You received " + product.getName());
@@ -123,10 +190,13 @@ public class VendingMachine {
         System.out.println(product.getSound());
 
         //TODO - Log transaction
-
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
-        String formattedDate = dateFormatter.format(LocalDateTime.now());
-        System.out.println(formattedDate + " " + product.getName() + " " + startingBalance + " $" + transaction.getBalance());
+        try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+            String formattedDate = dateFormatter.format(LocalDateTime.now());
+            logFile.println(formattedDate + " " + product.getName() + " " + product.getSlot() + " $" + startingBalance + " $" + transaction.getBalance());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
 
         //TODO - Add to Sales Report
     }
@@ -166,10 +236,10 @@ public class VendingMachine {
         System.out.println("");
 
         //TODO - Log Transaction
-        try (PrintWriter logFile = new PrintWriter(new FileWriter("logFile.txt", true))) {
+        try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
             String formattedDate = dateFormatter.format(LocalDateTime.now());
-            System.out.println(formattedDate + " GIVE CHANGE: $" + startingBalance + " $" + transaction.getBalance());
+            logFile.println(formattedDate + " GIVE CHANGE: $" + startingBalance + " $" + transaction.getBalance());
 
         } catch (IOException e) {
             System.out.println("Enter valid Filename");
@@ -204,7 +274,7 @@ public class VendingMachine {
 
             }
 
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NumberFormatException | NullPointerException | StringIndexOutOfBoundsException e) {
             System.out.println(" ");
             System.out.println("Enter a valid choice!");
             System.out.println(" ");
@@ -214,6 +284,9 @@ public class VendingMachine {
             System.out.println("Insufficient Funds");
             System.out.println(" ");
 
+        } catch (IllegalStateException e) {
+            System.out.println("");
+            System.out.println("SOLD OUT");
         }
     }
 
