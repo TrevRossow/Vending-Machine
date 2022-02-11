@@ -1,6 +1,5 @@
 package com.techelevator;
 
-import javax.swing.border.BevelBorder;
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,21 +15,73 @@ public class VendingMachine {
     private static Map<String, Item> inventoryMap = new HashMap<>();
 
 
-
     static Scanner scan = new Scanner(System.in);
-
 
     public static Map<String, Item> getInventoryMap() {
         VendingMachine vm = new VendingMachine();
-        vm.createChips();
-        vm.createCandy();
-        vm.createDrinks();
-        vm.createGum();
+        vm.createItems();
         return inventoryMap;
     }
-    
 
-    public void createChips() {
+    public Chip createChip(String csvLine) {
+
+        String[] characteristics = csvLine.split("\\|");
+        String slot = characteristics[0];
+        String name = characteristics[1];
+        BigDecimal price = new BigDecimal(characteristics[2]);
+        String item = characteristics[3];
+
+        Chip chip = new Chip(name, price, slot);
+        inventoryMap.put(slot, chip);
+
+        return chip;
+    }
+
+    public Drink createDrink(String csvLine) {
+
+        String[] characteristics = csvLine.split("\\|");
+        String slot = characteristics[0];
+        String name = characteristics[1];
+        BigDecimal price = new BigDecimal(characteristics[2]);
+        String item = characteristics[3];
+
+        Drink drink = new Drink(name, price, slot);
+        inventoryMap.put(slot, drink);
+        return drink;
+
+    }
+
+    public Candy createCandy(String csvLine) {
+
+        String[] characteristics = csvLine.split("\\|");
+        String slot = characteristics[0];
+        String name = characteristics[1];
+        BigDecimal price = new BigDecimal(characteristics[2]);
+        String item = characteristics[3];
+
+        Candy candy = new Candy(name, price, slot);
+        inventoryMap.put(slot, candy);
+        return candy;
+
+
+    }
+
+    public Gum createGum(String csvLine) {
+
+        String[] characteristics = csvLine.split("\\|");
+        String slot = characteristics[0];
+        String name = characteristics[1];
+        BigDecimal price = new BigDecimal(characteristics[2]);
+        String item = characteristics[3];
+
+        Gum gum = new Gum(name, price, slot);
+        inventoryMap.put(slot, gum);
+        return gum;
+    }
+
+
+    private void createItems() {
+
         try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
 
             while (inputFile.hasNextLine()) {
@@ -40,91 +91,27 @@ public class VendingMachine {
                 String name = characteristics[1];
                 BigDecimal price = new BigDecimal(characteristics[2]);
                 String item = characteristics[3];
+
 
                 if (item.equals("Chip")) {
-                    Chip chip = new Chip(name, price, slot);
-                    inventoryMap.put(slot, chip);
+                    createChip(line);
 
+                } else if
+                (item.equals("Drink")) {
+                    createDrink(line);
+                } else if
+                (item.equals("Candy")) {
+                    createCandy(line);
+                } else if (item.equals("Gum")) {
+                    createGum(line);
                 }
-
             }
+
+
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found");
         }
     }
-
-    public void createDrinks() {
-        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
-
-            while (inputFile.hasNextLine()) {
-                String line = inputFile.nextLine();
-                String[] characteristics = line.split("\\|");
-                String slot = characteristics[0];
-                String name = characteristics[1];
-                BigDecimal price = new BigDecimal(characteristics[2]);
-                String item = characteristics[3];
-
-                if (item.equals("Drink")) {
-                    Drink drink = new Drink(name, price, slot);
-                    inventoryMap.put(slot, drink);
-
-                }
-
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found");
-        }
-    }
-
-    public void createCandy() {
-        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
-
-            while (inputFile.hasNextLine()) {
-                String line = inputFile.nextLine();
-                String[] characteristics = line.split("\\|");
-                String slot = characteristics[0];
-                String name = characteristics[1];
-                BigDecimal price = new BigDecimal(characteristics[2]);
-                String item = characteristics[3];
-
-                if (item.equals("Candy")) {
-                    Candy candy = new Candy(name, price, slot);
-                    inventoryMap.put(slot, candy);
-
-                }
-
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found");
-        }
-    }
-
-    public void createGum() {
-        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
-
-            while (inputFile.hasNextLine()) {
-                String line = inputFile.nextLine();
-                String[] characteristics = line.split("\\|");
-                String slot = characteristics[0];
-                String name = characteristics[1];
-                BigDecimal price = new BigDecimal(characteristics[2]);
-                String item = characteristics[3];
-
-                if (item.equals("Gum")) {
-                    Gum gum = new Gum(name, price, slot);
-                    inventoryMap.put(slot, gum);
-
-                }
-
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found");
-        }
-    }
-
-
-
-
 
     private String receiveUserMoney() {
 
@@ -134,11 +121,15 @@ public class VendingMachine {
 
     }
 
-    private void addMoneyToBalance(String moneyIn) {
-        BigDecimal startingBalance = transaction.getBalance();
-
+    public BigDecimal convertsUserInputToBigDecimal(String moneyIn) {
         String userInputMoney = moneyIn + ".00";
         BigDecimal amountDeposited = new BigDecimal(userInputMoney);
+        return amountDeposited;
+
+    }
+
+    private void addsMoneyInputToBalance(BigDecimal amountDeposited) {
+        BigDecimal startingBalance = transaction.getBalance();
         transaction.deposit(amountDeposited);
         System.out.println("Current balance is: $" + transaction.getBalance());
 
@@ -149,7 +140,9 @@ public class VendingMachine {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+
     }
+
 
     private String receiveProductCode() {
         System.out.println("");
@@ -261,7 +254,8 @@ public class VendingMachine {
             if (userInput.substring(0, 1).equals("1")) {
                 //vendingMachine.feedMoney();
                 String moneyIn = receiveUserMoney();
-                addMoneyToBalance(moneyIn);
+                BigDecimal converted = convertsUserInputToBigDecimal(moneyIn);
+                addsMoneyInputToBalance(converted);
             } else if (userInput.substring(0, 1).equals("2")) {
                 //vendingMachine.selectProduct();
                 String productCode = receiveProductCode();

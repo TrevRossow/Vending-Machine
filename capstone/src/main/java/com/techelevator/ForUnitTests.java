@@ -52,6 +52,7 @@ public class ForUnitTests {
 
     }
 
+
     public Chip createChip(String csvLine) {
         String[] characteristics = csvLine.split("\\|");
         String slot = characteristics[0];
@@ -64,60 +65,181 @@ public class ForUnitTests {
             Chip chip = new Chip(name, price, slot);
             fakeMap.put(slot, chip);
             return chip;
-        }
-        else {
+        } else {
             return null;
         }
 
     }
-
-
- /*   CREATE ITEMS AS ONE METHOD
-
-        public static Map<String, Item> getInventoryMap() {
-        VendingMachine vm = new VendingMachine();
-        vm.createItems();
-        return inventoryMap;
-    }
-
-        private void createItems() {
-
-        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
-
-            while (inputFile.hasNextLine()) {
-                String line = inputFile.nextLine();
-                String[] characteristics = line.split("\\|");
-                String slot = characteristics[0];
-                String name = characteristics[1];
-                BigDecimal price = new BigDecimal(characteristics[2]);
-                String item = characteristics[3];
-
-
-                if (item.equals("Chip")) {
-                    Chip chip = new Chip(name, price, slot);
-                    inventoryMap.put(slot, chip);
-
-                } else if
-                (item.equals("Drink")) {
-                    Drink drink = new Drink(name, price, slot);
-                    inventoryMap.put(slot, drink);
-
-                } else if
-                (item.equals("Candy")) {
-                    Candy candy = new Candy(name, price, slot);
-                    inventoryMap.put(slot, candy);
-
-                } else if (item.equals("Gum")) {
-                    Gum gum = new Gum(name, price, slot);
-                    inventoryMap.put(slot, gum);
-                }
-            }
-
-
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found");
-        }
-
-
-    }*/
 }
+
+
+//    CREATE ITEMS AS ONE METHOD
+//
+//        public static Map<String, Item> getInventoryMap() {
+//        VendingMachine vm = new VendingMachine();
+//        vm.createItems();
+//        return inventoryMap;
+//    }
+////
+////        private void createItems() {
+////
+////        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
+////
+////            while (inputFile.hasNextLine()) {
+////                String line = inputFile.nextLine();
+////                String[] characteristics = line.split("\\|");
+////                String slot = characteristics[0];
+////                String name = characteristics[1];
+////                BigDecimal price = new BigDecimal(characteristics[2]);
+////                String item = characteristics[3];
+////
+////
+////                if (item.equals("Chip")) {
+////                    Chip chip = new Chip(name, price, slot);
+////                    inventoryMap.put(slot, chip);
+////
+////                } else if
+////                (item.equals("Drink")) {
+////                    Drink drink = new Drink(name, price, slot);
+////                    inventoryMap.put(slot, drink);
+////
+////                } else if
+////                (item.equals("Candy")) {
+////                    Candy candy = new Candy(name, price, slot);
+////                    inventoryMap.put(slot, candy);
+////
+////                } else if (item.equals("Gum")) {
+////                    Gum gum = new Gum(name, price, slot);
+////                    inventoryMap.put(slot, gum);
+////                }
+////            }
+////
+////
+////        } catch (FileNotFoundException e) {
+////            System.out.println("File Not Found");
+////        }
+////
+////
+////    }
+//}
+
+//  public void createDrinks() {
+//        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
+//
+//            while (inputFile.hasNextLine()) {
+//                String line = inputFile.nextLine();
+//                String[] characteristics = line.split("\\|");
+//                String slot = characteristics[0];
+//                String name = characteristics[1];
+//                BigDecimal price = new BigDecimal(characteristics[2]);
+//                String item = characteristics[3];
+//
+//                if (item.equals("Drink")) {
+//                    Drink drink = new Drink(name, price, slot);
+//                    inventoryMap.put(slot, drink);
+//
+//                }
+//
+//            }
+//        } catch (FileNotFoundException e) {
+//            System.out.println("File Not Found");
+//        }
+//    }
+
+//    public void createCandy() {
+//        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
+//
+//            while (inputFile.hasNextLine()) {
+//                String line = inputFile.nextLine();
+//                String[] characteristics = line.split("\\|");
+//                String slot = characteristics[0];
+//                String name = characteristics[1];
+//                BigDecimal price = new BigDecimal(characteristics[2]);
+//                String item = characteristics[3];
+//
+//                if (item.equals("Candy")) {
+//                    Candy candy = new Candy(name, price, slot);
+//                    inventoryMap.put(slot, candy);
+//
+//                }
+//
+//            }
+//        } catch (FileNotFoundException e) {
+//            System.out.println("File Not Found");
+//        }
+//    }
+//
+//    public void createGum() {
+//        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
+//
+//            while (inputFile.hasNextLine()) {
+//                String line = inputFile.nextLine();
+//                String[] characteristics = line.split("\\|");
+//                String slot = characteristics[0];
+//                String name = characteristics[1];
+//                BigDecimal price = new BigDecimal(characteristics[2]);
+//                String item = characteristics[3];
+//
+//                if (item.equals("Gum")) {
+//                    Gum gum = new Gum(name, price, slot);
+//                    inventoryMap.put(slot, gum);
+//
+//                }
+//
+//            }
+//        } catch (FileNotFoundException e) {
+//            System.out.println("File Not Found");
+//        }
+//    }
+
+//    public static Map<String, Item> getInventoryMap() {
+//        VendingMachine vm = new VendingMachine();
+//        vm.createChips();
+//        vm.createCandy();
+//        vm.createDrinks();
+//        vm.createGum();
+//        return inventoryMap;
+//    }
+
+//
+//    public void createChips() {
+//        try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
+//
+//            while (inputFile.hasNextLine()) {
+//                String line = inputFile.nextLine();
+//                String[] characteristics = line.split("\\|");
+//                String slot = characteristics[0];
+//                String name = characteristics[1];
+//                BigDecimal price = new BigDecimal(characteristics[2]);
+//                String item = characteristics[3];
+//
+//                if (item.equals("Chip")) {
+//                    Chip chip = new Chip(name, price, slot);
+//                    inventoryMap.put(slot, chip);
+//
+//                }
+//
+//            }
+//        } catch (FileNotFoundException e) {
+//            System.out.println("File Not Found");
+//        }
+//    }
+
+
+//    private void addMoneyToBalance(String moneyIn) {
+//        BigDecimal startingBalance = transaction.getBalance();
+//
+//        String userInputMoney = moneyIn + ".00";
+//        BigDecimal amountDeposited = new BigDecimal(userInputMoney);
+//        transaction.deposit(amountDeposited);
+//        System.out.println("Current balance is: $" + transaction.getBalance());
+//
+//        try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
+//            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+//            String formattedDate = dateFormatter.format(LocalDateTime.now());
+//            logFile.println(formattedDate + " FEED MONEY: $" + startingBalance + " $" + transaction.getBalance());
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
+//
+//    }
