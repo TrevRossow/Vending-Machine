@@ -17,7 +17,7 @@ public class Transaction {
         this.balance = balance.add(moneyIn);
 
     }
-    public void withdrawl(BigDecimal moneyOut){
+    public void withdraw(BigDecimal moneyOut){
         this.balance = balance.subtract(moneyOut);
 
 

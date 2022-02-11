@@ -1,8 +1,9 @@
 package com.techelevator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -11,24 +12,22 @@ import java.util.Set;
 public class VendingMachine {
 
     private static Transaction transaction = new Transaction();
-//    private static Map<String, Item> inventoryMap = new HashMap<>();
-    private static Map <String, Item> inventoryMap = new HashMap<>();
+    //    private static Map<String, Item> inventoryMap = new HashMap<>();
+    private static Map<String, Item> inventoryMap = new HashMap<>();
 //    private Map<String, Item> duplicateMap = inventoryMap;
-
-
 
 
     static Scanner scan = new Scanner(System.in);
 
-//    public static Map<String, Item> getInventoryMap() {
-      public Map<String, Item> getInventoryMap() {
+    //    public static Map<String, Item> getInventoryMap() {
+    public Map<String, Item> getInventoryMap() {
         VendingMachine vm = new VendingMachine();
         vm.createItems();
         return inventoryMap;
     }
 
 
-    public void createItems() {
+    private void createItems() {
 
         try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
 
@@ -69,53 +68,72 @@ public class VendingMachine {
 
     }
 
-    private void feedMoney() {
+    private String receiveUserMoney() {
 
         System.out.print("Enter money in Whole Dollars >>> ");
         String userInput = scan.nextLine();
-        String userInputMoney = userInput + ".00";
+        return userInput;
+
+    }
+
+    private void addMoneyToBalance(String moneyIn) {
+        BigDecimal startingBalance = transaction.getBalance();
+
+        String userInputMoney = moneyIn + ".00";
         BigDecimal amountDeposited = new BigDecimal(userInputMoney);
         transaction.deposit(amountDeposited);
         System.out.println("Current balance is: $" + transaction.getBalance());
 
-        //TODO - Log Transaction
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+        String formattedDate = dateFormatter.format(LocalDateTime.now());
+        System.out.println(formattedDate + " FEED MONEY: $" + startingBalance + " $" + transaction.getBalance());
 
     }
 
-    private void selectProduct() {
+    private String receiveProductCode() {
         System.out.print("Enter item code >>> ");
         String userInput = scan.nextLine();
 
+        return userInput;
+    }
 
+    public void sellProduct(String userInput) throws IllegalArgumentException {
 
         //Takes one out of inventory
         Item product = inventoryMap.get(userInput);
+        BigDecimal startingBalance = transaction.getBalance();
+
+        if (product.getPrice().compareTo(transaction.getBalance()) > 0) {
+            throw new IllegalArgumentException("Insufficient Funds");
+
+        }
+
         product.sellItem();
 
-        //TODO - Print name of product received
+        System.out.println(" ");
+        System.out.println("You received " + product.getName());
         System.out.println("Num Available is " + product.getNumAvailable());
 
         //Subract price from balance
-        transaction.withdrawl(product.getPrice());
+        transaction.withdraw(product.getPrice());
         System.out.println("Current balance is " + transaction.getBalance());
 
         //Print off sound
         product.getSound();
         System.out.println(product.getSound());
 
-
-        //TODO - Check there's money to buy item
-
-
         //TODO - Log transaction
 
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+        String formattedDate = dateFormatter.format(LocalDateTime.now());
+        System.out.println(formattedDate + " " + product.getName() + " " + startingBalance + " $" + transaction.getBalance());
 
         //TODO - Add to Sales Report
-
     }
 
     private void getChange() {
-        BigDecimal changeBalance = transaction.getBalance();
+        BigDecimal startingBalance = transaction.getBalance();
+
         BigDecimal zero = new BigDecimal("0.00");
         int numOfQuarters = 0;
         int numOfDimes = 0;
@@ -124,8 +142,11 @@ public class VendingMachine {
         BigDecimal dime = new BigDecimal("0.10");
         BigDecimal nickel = new BigDecimal("0.05");
 
-        System.out.println("Your change is: $" + changeBalance);
+        System.out.println("Your change is: $" + startingBalance);
+        BigDecimal changeBalance = startingBalance;
+
         while ((changeBalance.compareTo(zero) > 0)) {
+
 
             if (changeBalance.compareTo(quarter) > -1) {
                 numOfQuarters++;
@@ -139,12 +160,22 @@ public class VendingMachine {
 
             }
         }
+        transaction.withdraw(startingBalance);
+
         System.out.format("You are receiving %d quarters, %d dimes, %d nickels", numOfQuarters, numOfDimes, numOfNickels);
         System.out.println("");
 
         //TODO - Log Transaction
+        try (PrintWriter logFile = new PrintWriter(new FileWriter("logFile.txt", true))) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+            String formattedDate = dateFormatter.format(LocalDateTime.now());
+            System.out.println(formattedDate + " GIVE CHANGE: $" + startingBalance + " $" + transaction.getBalance());
 
+        } catch (IOException e) {
+            System.out.println("Enter valid Filename");
+        }
     }
+
     public void purchase() {
         try {
             System.out.println("Current Money Provided: $" + transaction.getBalance());
@@ -159,20 +190,29 @@ public class VendingMachine {
 
             if (userInput.substring(0, 1).equals("1")) {
                 //vendingMachine.feedMoney();
-                feedMoney();
+                String moneyIn = receiveUserMoney();
+                addMoneyToBalance(moneyIn);
             } else if (userInput.substring(0, 1).equals("2")) {
                 //vendingMachine.selectProduct();
-                selectProduct();
+                String productCode = receiveProductCode();
+                sellProduct(productCode);
             } else if (userInput.substring(0, 1).equals("3")) {
                 //vendingMachine.getChange();
                 getChange();
             } else {
-                throw new IllegalArgumentException();
+                throw new NumberFormatException();
 
             }
 
-        } catch (IllegalArgumentException e) {
+        } catch (NumberFormatException | NullPointerException e) {
+            System.out.println(" ");
             System.out.println("Enter a valid choice!");
+            System.out.println(" ");
+
+        } catch (IllegalArgumentException e) {
+            System.out.println(" ");
+            System.out.println("Insufficient Funds");
+            System.out.println(" ");
 
         }
     }
