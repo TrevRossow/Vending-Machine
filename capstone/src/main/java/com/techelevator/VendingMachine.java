@@ -186,10 +186,6 @@ public class VendingMachine {
 
     }
 
-
-
-
-
     public void givesExcpetionIfNotEnoughFunds(boolean hasFundsAvailable) {
         if (!hasFundsAvailable) {
             throw new IllegalArgumentException();
@@ -244,8 +240,6 @@ public class VendingMachine {
             System.out.println(e.getMessage());
         }
     }
-
-
 
     public void sellProduct(String userInput) throws IllegalArgumentException {
 
