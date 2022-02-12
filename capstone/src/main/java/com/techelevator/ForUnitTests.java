@@ -299,3 +299,88 @@ public class ForUnitTests {
 //
 //        return chip;
 //    }
+
+//    public void sellProduct(String userInput) throws IllegalArgumentException {
+//
+//        //Takes one out of inventory
+//        Item product = inventoryMap.get(userInput);
+//        BigDecimal startingBalance = transaction.getBalance();
+//
+//        if (product.getPrice().compareTo(transaction.getBalance()) > 0) {
+//            throw new IllegalArgumentException("Insufficient Funds");
+//
+//        }
+//        if (product.getNumAvailable() > 0) {
+//            product.sellItem();
+//        } else {
+//            throw new IllegalStateException();
+//        }
+//
+//        System.out.println(" ");
+//        System.out.println("You received " + product.getName());
+//        System.out.println("Num Available is " + product.getNumAvailable());
+//
+//        //Print off sound
+//        product.getSound();
+//        System.out.println(product.getSound());
+//
+//        //Subract price from balance
+//        transaction.withdraw(product.getPrice());
+//        System.out.println("Current balance is " + transaction.getBalance());
+//
+//        try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
+//            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+//            String formattedDate = dateFormatter.format(LocalDateTime.now());
+//            logFile.println(formattedDate + " " + product.getName() + " " + product.getSlot() + " $" + startingBalance + " $" + transaction.getBalance());
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
+//
+//        //TODO - Add to Sales Report
+//    }
+
+//    private String getChange() {
+//        BigDecimal startingBalance = transaction.getBalance();
+//
+//        BigDecimal zero = new BigDecimal("0.00");
+//        int numOfQuarters = 0;
+//        int numOfDimes = 0;
+//        int numOfNickels = 0;
+//        BigDecimal quarter = new BigDecimal("0.25");
+//        BigDecimal dime = new BigDecimal("0.10");
+//        BigDecimal nickel = new BigDecimal("0.05");
+//
+//        System.out.println("Your change is: $" + startingBalance);
+//        BigDecimal changeBalance = startingBalance;
+//
+//        while ((changeBalance.compareTo(zero) > 0)) {
+//
+//
+//            if (changeBalance.compareTo(quarter) > -1) {
+//                numOfQuarters++;
+//                changeBalance = changeBalance.subtract(quarter);
+//            } else if (changeBalance.compareTo(dime) > -1) {
+//                numOfDimes++;
+//                changeBalance = changeBalance.subtract(dime);
+//            } else if (changeBalance.compareTo(nickel) > -1) {
+//                numOfNickels++;
+//                changeBalance = changeBalance.subtract(nickel);
+//
+//            }
+//        }
+//        transaction.withdraw(startingBalance);
+//
+//        System.out.format("You are receiving %d quarters, %d dimes, %d nickels", numOfQuarters, numOfDimes, numOfNickels);
+//        System.out.println("");
+//
+//        return "You are receiving " + numOfQuarters + ", " + numOfDimes + ", " + numOfNickels;
+//
+//        try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
+//            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+//            String formattedDate = dateFormatter.format(LocalDateTime.now());
+//            logFile.println(formattedDate + " GIVE CHANGE: $" + startingBalance + " $" + transaction.getBalance());
+//
+//        } catch (IOException e) {
+//            System.out.println("Enter valid Filename");
+//        }
+//    }

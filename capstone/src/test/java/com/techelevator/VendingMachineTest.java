@@ -8,20 +8,21 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.techelevator.VendingMachine.inventoryMap;
+import static com.techelevator.VendingMachine.transaction;
+
 
 public class VendingMachineTest {
 
     VendingMachine vendingMachine = new VendingMachine();
-    Transaction transaction = new Transaction();
-    Map<String,Item> map = new HashMap<>();
+
 
     @Before
     public void setup() {
-        Chip chip = vendingMachine.createChip("F7|Ruffles|1.00|Chip");
-        vendingMachine.addChipToInventory("F7", chip);
-
+        transaction.deposit(new BigDecimal("4.90"));
 
     }
+
 
     @Test
     public void test_create_chip_given_csv_line() {
@@ -102,18 +103,90 @@ public class VendingMachineTest {
     }
 
     @Test
-    public void tests_returns_true_if_has_funds_available() {
+    public void passes_if_has_funds_available() {
         //Try
-        transaction.deposit(new BigDecimal("5.00"));
+        Chip chip = vendingMachine.createChip("F7|Ruffles|1.00|Chip");
 
         //Assign
-        boolean hasEnoughMoney = vendingMachine.hasFundsAvailable("F7");
+        boolean hasEnoughMoney = vendingMachine.hasFundsAvailable(chip);
 
         //Assert
-        Assert.assertTrue("Return false given balance of $4.00 and price of $3.05", hasEnoughMoney);
-
+        Assert.assertTrue("Returns false given balance of $4.90 and price of $1.00", hasEnoughMoney);
 
     }
 
+    @Test
+    public void passes_if_not_enough_funds_available() {
+        //Try
+        Chip chip = vendingMachine.createChip("F7|Ruffles|5.00|Chip");
+
+        //Assign
+        boolean hasEnoughMoney = vendingMachine.hasFundsAvailable(chip);
+
+        //Assert
+        Assert.assertFalse("Returns true given balance of $4.90 and price of $5.00", hasEnoughMoney);
+
+    }
+
+    //TODO - Tests if user doesn't have funds available
+
+    @Test
+    public void passes_if_item_is_in_stock() {
+        //Try
+        Chip chip = vendingMachine.createChip("F7|Ruffles|1.00|Chip");
+
+        //Assign
+        boolean isSoldOut = vendingMachine.isSoldOut(chip);
+
+        //Assert
+        Assert.assertFalse("Returns true when item is in stock", isSoldOut);
+
+    }
+
+    @Test
+    public void passes_if_item_is_out_of_stock() {
+        //Try
+        Chip chip = vendingMachine.createChip("F7|Ruffles|1.00|Chip");
+        chip.sellItem();
+        chip.sellItem();
+        chip.sellItem();
+        chip.sellItem();
+        chip.sellItem();
+
+        //Assign
+        boolean isSoldOut = vendingMachine.isSoldOut(chip);
+
+        //Assert
+        Assert.assertTrue("Returns false when item is out of stock", isSoldOut);
+
+    }
+
+    @Test
+    public void returns_item_given_slot_from_user() {
+        //Try
+        Chip expectedChip = vendingMachine.createChip("F7|Ruffles|1.00|Chip");
+        inventoryMap.put("F7", expectedChip);
+
+        //Assign
+        Item actualChip = vendingMachine.getProductFromUserInput("F7");
+
+        //Assert
+        Assert.assertEquals("Chip names don't match", expectedChip.getName(), actualChip.getName());
+        Assert.assertEquals("Chip prices don't match", expectedChip.getPrice(), actualChip.getPrice());
+        Assert.assertEquals("Chip slots don't match", expectedChip.getSlot(), actualChip.getSlot());
+
+    }
+
+    @Test
+    public void get_change_prints_correct_string_and_gives_correct_change() {
+        //Try
+        String expectedString = "You are receiving 19 quarter(s), 1 dime(s) and 1 nickel(s)";
+
+        //Assign
+        String actualString = vendingMachine.getChange();
+
+        //Assert
+        Assert.assertEquals("Didn't print correct change given $4.90 balance", expectedString, actualString);
+    }
 
 }
