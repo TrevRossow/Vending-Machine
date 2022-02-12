@@ -32,9 +32,11 @@ public class VendingMachine {
         String item = characteristics[3];
 
         Chip chip = new Chip(name, price, slot);
-        inventoryMap.put(slot, chip);
-
         return chip;
+    }
+
+    public void addChipToInventory(String slot, Chip chip) {
+        inventoryMap.put(slot, chip);
     }
 
     public Drink createDrink(String csvLine) {
@@ -46,9 +48,12 @@ public class VendingMachine {
         String item = characteristics[3];
 
         Drink drink = new Drink(name, price, slot);
-        inventoryMap.put(slot, drink);
         return drink;
 
+    }
+
+    public void addDrinkToInventory(String slot, Drink drink) {
+        inventoryMap.put(slot, drink);
     }
 
     public Candy createCandy(String csvLine) {
@@ -60,10 +65,11 @@ public class VendingMachine {
         String item = characteristics[3];
 
         Candy candy = new Candy(name, price, slot);
-        inventoryMap.put(slot, candy);
         return candy;
+    }
 
-
+    public void addCandyToInventory(String slot, Candy candy) {
+        inventoryMap.put(slot, candy);
     }
 
     public Gum createGum(String csvLine) {
@@ -75,8 +81,11 @@ public class VendingMachine {
         String item = characteristics[3];
 
         Gum gum = new Gum(name, price, slot);
-        inventoryMap.put(slot, gum);
         return gum;
+    }
+
+    public void addGumToInventory(String slot, Gum gum) {
+        inventoryMap.put(slot, gum);
     }
 
 
@@ -94,16 +103,29 @@ public class VendingMachine {
 
 
                 if (item.equals("Chip")) {
-                    createChip(line);
+//                    createChip(line);
+                    Chip chip = createChip(line);
+                    addChipToInventory(slot, chip);
 
                 } else if
                 (item.equals("Drink")) {
-                    createDrink(line);
+//                    createDrink(line);
+
+                    Drink drink = createDrink(line);
+                    addDrinkToInventory(slot, drink);
                 } else if
                 (item.equals("Candy")) {
-                    createCandy(line);
+//                    createCandy(line);
+
+                    Candy candy = createCandy(line);
+                    addCandyToInventory(slot, candy);
+
                 } else if (item.equals("Gum")) {
-                    createGum(line);
+//                    createGum(line);
+
+                    Gum gum = createGum(line);
+                    addGumToInventory(slot, gum);
+
                 }
             }
 
@@ -154,6 +176,77 @@ public class VendingMachine {
         return userInput;
     }
 
+    public boolean hasFundsAvailable(String userInput) {
+        Item product = inventoryMap.get(userInput);
+        if (product.getPrice().compareTo(transaction.getBalance()) > 0) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+
+
+
+
+    public void givesExcpetionIfNotEnoughFunds(boolean hasFundsAvailable) {
+        if (!hasFundsAvailable) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public boolean isSoldOut(String userInput) {
+        Item product = inventoryMap.get(userInput);
+        if (product.getNumAvailable() > 0) {
+            return false;
+        } else  {
+            return true;
+        }
+    }
+
+    public void givesExceptionIfSoldOut(boolean isSoldOut) {
+        if (isSoldOut) {
+            throw new IllegalStateException();
+        }
+    }
+
+    public void printsProductNameAndNumAvailable(String userInput) {
+        Item product = inventoryMap.get(userInput);
+        System.out.println(" ");
+        System.out.println("You received " + product.getName());
+        System.out.println("Num Available is " + product.getNumAvailable());
+    }
+
+    public void printSound(String userInput) {
+        Item product = inventoryMap.get(userInput);
+        System.out.println(product.getSound());
+    }
+
+    public void subtractBalanceAndLogTransaction(String userInput) {
+        //Creates Product
+        Item product = inventoryMap.get(userInput);
+
+        //Creates Starting Balance
+        BigDecimal startingBalance = transaction.getBalance();
+
+        //Subtracts price from balance/Prints new balance
+        transaction.withdraw(product.getPrice());
+        System.out.println("Current balance is " + transaction.getBalance());
+
+
+        //Logs transaction
+        try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+            String formattedDate = dateFormatter.format(LocalDateTime.now());
+            logFile.println(formattedDate + " " + product.getName() + " " + product.getSlot() + " $" + startingBalance + " $" + transaction.getBalance());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+
     public void sellProduct(String userInput) throws IllegalArgumentException {
 
         //Takes one out of inventory
@@ -174,15 +267,14 @@ public class VendingMachine {
         System.out.println("You received " + product.getName());
         System.out.println("Num Available is " + product.getNumAvailable());
 
-        //Subract price from balance
-        transaction.withdraw(product.getPrice());
-        System.out.println("Current balance is " + transaction.getBalance());
-
         //Print off sound
         product.getSound();
         System.out.println(product.getSound());
 
-        //TODO - Log transaction
+        //Subract price from balance
+        transaction.withdraw(product.getPrice());
+        System.out.println("Current balance is " + transaction.getBalance());
+
         try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
             String formattedDate = dateFormatter.format(LocalDateTime.now());
@@ -228,7 +320,6 @@ public class VendingMachine {
         System.out.format("You are receiving %d quarters, %d dimes, %d nickels", numOfQuarters, numOfDimes, numOfNickels);
         System.out.println("");
 
-        //TODO - Log Transaction
         try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
             String formattedDate = dateFormatter.format(LocalDateTime.now());
@@ -238,6 +329,52 @@ public class VendingMachine {
             System.out.println("Enter valid Filename");
         }
     }
+
+//    private String getChange() {
+//        BigDecimal startingBalance = transaction.getBalance();
+//
+//        BigDecimal zero = new BigDecimal("0.00");
+//        int numOfQuarters = 0;
+//        int numOfDimes = 0;
+//        int numOfNickels = 0;
+//        BigDecimal quarter = new BigDecimal("0.25");
+//        BigDecimal dime = new BigDecimal("0.10");
+//        BigDecimal nickel = new BigDecimal("0.05");
+//
+//        System.out.println("Your change is: $" + startingBalance);
+//        BigDecimal changeBalance = startingBalance;
+//
+//        while ((changeBalance.compareTo(zero) > 0)) {
+//
+//
+//            if (changeBalance.compareTo(quarter) > -1) {
+//                numOfQuarters++;
+//                changeBalance = changeBalance.subtract(quarter);
+//            } else if (changeBalance.compareTo(dime) > -1) {
+//                numOfDimes++;
+//                changeBalance = changeBalance.subtract(dime);
+//            } else if (changeBalance.compareTo(nickel) > -1) {
+//                numOfNickels++;
+//                changeBalance = changeBalance.subtract(nickel);
+//
+//            }
+//        }
+//        transaction.withdraw(startingBalance);
+//
+//        System.out.format("You are receiving %d quarters, %d dimes, %d nickels", numOfQuarters, numOfDimes, numOfNickels);
+//        System.out.println("");
+//
+//        return "You are receiving " + numOfQuarters + ", " + numOfDimes + ", " + numOfNickels;
+//
+//        try (PrintWriter logFile = new PrintWriter(new FileWriter("Log.txt", true))) {
+//            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+//            String formattedDate = dateFormatter.format(LocalDateTime.now());
+//            logFile.println(formattedDate + " GIVE CHANGE: $" + startingBalance + " $" + transaction.getBalance());
+//
+//        } catch (IOException e) {
+//            System.out.println("Enter valid Filename");
+//        }
+//    }
 
     public void purchase() {
         try {
@@ -259,7 +396,17 @@ public class VendingMachine {
             } else if (userInput.substring(0, 1).equals("2")) {
                 //vendingMachine.selectProduct();
                 String productCode = receiveProductCode();
-                sellProduct(productCode);
+                givesExcpetionIfNotEnoughFunds(hasFundsAvailable(productCode));
+                givesExceptionIfSoldOut(isSoldOut(productCode));
+                Item product = inventoryMap.get(productCode);
+                product.sellItem();
+                printsProductNameAndNumAvailable(productCode);
+                printSound(productCode);
+                subtractBalanceAndLogTransaction(productCode);
+
+
+//                sellProduct(productCode);
+
             } else if (userInput.substring(0, 1).equals("3")) {
                 //vendingMachine.getChange();
                 getChange();

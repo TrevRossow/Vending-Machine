@@ -5,9 +5,11 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
+
 public class VendingMachineTest {
 
     VendingMachine vendingMachine = new VendingMachine();
+
 
     @Test
     public void test_create_chip_given_csv_line() {
@@ -84,6 +86,23 @@ public class VendingMachineTest {
         BigDecimal actualMoney = vendingMachine.convertsUserInputToBigDecimal(userInput);
         BigDecimal expectedMoney= new BigDecimal("1.00");
         Assert.assertEquals("Couldn't be converted", expectedMoney,actualMoney);
+
+    }
+
+    @Test
+    public void tests_returns_true_if_has_funds_available() {
+        //Try
+        BigDecimal balance = new BigDecimal("4.00");
+        Chip testProduct = new Chip("Potato Crisps", new BigDecimal("3.05"), "A1");
+        BigDecimal price = testProduct.getPrice();
+
+        //Assign
+        boolean hasEnoughMoney = vendingMachine.hasFundsAvailable("A1");
+
+        //Assert
+        Assert.assertTrue("Return false given balance of $4.00 and price of $3.05", hasEnoughMoney);
+
+
 
     }
 

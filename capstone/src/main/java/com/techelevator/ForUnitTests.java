@@ -243,3 +243,59 @@ public class ForUnitTests {
 //        }
 //
 //    }
+
+//    public Gum createGum(String csvLine) {
+//
+//        String[] characteristics = csvLine.split("\\|");
+//        String slot = characteristics[0];
+//        String name = characteristics[1];
+//        BigDecimal price = new BigDecimal(characteristics[2]);
+//        String item = characteristics[3];
+//
+//        Gum gum = new Gum(name, price, slot);
+//        inventoryMap.put(slot, gum);
+//        return gum;
+//    }
+
+//    public Candy createCandy(String csvLine) {
+//
+//        String[] characteristics = csvLine.split("\\|");
+//        String slot = characteristics[0];
+//        String name = characteristics[1];
+//        BigDecimal price = new BigDecimal(characteristics[2]);
+//        String item = characteristics[3];
+//
+//        Candy candy = new Candy(name, price, slot);
+//        inventoryMap.put(slot, candy);
+//        return candy;
+//
+//
+//    }
+
+//    public Drink createDrink(String csvLine) {
+//
+//        String[] characteristics = csvLine.split("\\|");
+//        String slot = characteristics[0];
+//        String name = characteristics[1];
+//        BigDecimal price = new BigDecimal(characteristics[2]);
+//        String item = characteristics[3];
+//
+//        Drink drink = new Drink(name, price, slot);
+//        inventoryMap.put(slot, drink);
+//        return drink;
+//
+//    }
+
+//    public Chip createChip(String csvLine) {
+//
+//        String[] characteristics = csvLine.split("\\|");
+//        String slot = characteristics[0];
+//        String name = characteristics[1];
+//        BigDecimal price = new BigDecimal(characteristics[2]);
+//        String item = characteristics[3];
+//
+//        Chip chip = new Chip(name, price, slot);
+//        inventoryMap.put(slot, chip);
+//
+//        return chip;
+//    }
