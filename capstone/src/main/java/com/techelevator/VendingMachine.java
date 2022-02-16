@@ -89,7 +89,7 @@ public class VendingMachine {
     }
 
 
-    private void createItems() {
+    protected Map<String, Item> createItems() {
 
         try (Scanner inputFile = new Scanner(new File("vendingmachine.csv"))) {
 
@@ -133,6 +133,8 @@ public class VendingMachine {
         } catch (FileNotFoundException e) {
             System.out.println("File Not Found");
         }
+
+        return inventoryMap;
     }
 
     private String receiveUserMoney() {

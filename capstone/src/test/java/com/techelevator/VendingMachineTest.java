@@ -128,7 +128,6 @@ public class VendingMachineTest {
 
     }
 
-    //TODO - Tests if user doesn't have funds available
 
     @Test
     public void passes_if_item_is_in_stock() {
